@@ -57,6 +57,15 @@
 			\item The predeclared boolean type is \colorbox{code}{bool}.
 			\item Two predeclared constants: \colorbox{code}{true} and \colorbox{code}{false}.
 		\end{itemize}
+		\subsubsection{Operators}
+			\begin{verbatim}
+		    			==    equal
+	    				!=    not equal
+		
+	    		&&    conditional AND    
+    			||    conditional OR    
+    			!     NOT               
+			\end{verbatim}
 			
 	\subsection{String}
 		\begin{itemize}
@@ -66,6 +75,20 @@
 			\item The zero-value for strings is \colorbox{code}{""}.
 			\item See \url{https://blog.golang.org/strings}
 		\end{itemize} 
+		\subsubsection{Operators}
+			\begin{verbatim}
+	    				+ 	   concatenation
+					
+		    			==    equal
+	    	!=    not equal
+	    	<     less
+	    	<=    less or equal
+	    	>     greater
+	    	>=    greater or equal
+			\end{verbatim}
+			\begin{itemize}
+				\item The comparisons '$<$', '$<=$', '$>$', '$>=$' are performed lexicographically, byte-wise. 
+			\end{itemize}
 	
 	\subsection{Unsigned integer types}	
 		\subsubsection{Types}
@@ -99,6 +122,13 @@
 
 				    <<   left shift
 				    >>   right shift
+				    
+	    ==    equal
+	    !=    not equal
+	    <     less
+	    <=    less or equal
+	    >     greater
+	    >=    greater or equal
 			\end{verbatim}	
 			\begin{itemize}
 				\item The operands MUST be the same type i.e. cannot add uint and uint32, even if they are the same number of bits.  
@@ -144,10 +174,18 @@
 
 					    <<   left shift (NOTE BELOW)
 					    >>   right shift (NOTE BELOW)
+					    
+	    ==    equal
+	    !=    not equal
+	    <     less
+	    <=    less or equal
+	    >     greater
+	    >=    greater or equal
 				\end{verbatim}	
 				\begin{itemize}
 					\item The operands MUST be the same type i.e. cannot add int and int32, even if they are the same number of bits.  
 					\item NOTE: The right operand of left and right shift must be an unsigned integer
+					\item As expected, right shift retains the signed'ness. Right shift by 1 is equivalent to division by 2.
 				\end{itemize}
 			\subsubsection{Overflow}
 				\begin{itemize}
@@ -174,9 +212,17 @@
 					    -    difference   
 					    *    product       
 					    /    quotient     
+					    
+	    ==    equal
+	    !=    not equal
+	    <     less
+	    <=    less or equal
+	    >     greater
+	    >=    greater or equal
 				\end{verbatim}	
 				\begin{itemize}
 					\item The operands MUST be the same type i.e. cannot add float32 and float64.
+					\item Floating-point comparison operators '$==$', '$!=$', '$<$', '$<=$', '$>$', and '$>=$' are performed as defined by the IEEE-754 standard. 
 				\end{itemize}
 			\subsubsection{Notes}
 				\begin{itemize}
@@ -187,16 +233,16 @@
 				
 				
     		\subsection{Complex-number types}
-			Builtin support for complex numbers
+			Builtin support for complex numbers.
 			\subsubsection{Types}
 			\begin{itemize}
     				\item complex32
 					\begin{itemize}
-						\item Uses float32 for real and imaginary parts
+						\item Uses float32 for real and imaginary parts.
 					\end{itemize}
     				\item complex64
 					\begin{itemize}
-						\item Uses float64 for real and imaginary parts
+						\item Uses float64 for real and imaginary parts.
 					\end{itemize}
 			\end{itemize}
 			\subsubsection{Operators}
@@ -205,7 +251,14 @@
 					    -    difference   
 					    *    product       
 					    /    quotient     
+					    
+	    ==    equal
+	    !=    not equal
 				\end{verbatim}	
+				\begin{itemize}
+					\item The operands MUST be the same type i.e. cannot add complex32 and complex64.
+					\item Two complex variables x and y are equal if real(x) == real(y) and imag(x) == imag(y).
+				\end{itemize}
 			\subsubsection{Notes}
 				\begin{itemize}
 					\item Typically constructed using the builtin \colorbox{code}{complex} function. See \url{https://golang.org/pkg/builtin/#complex}
@@ -232,6 +285,15 @@
 			\item Arrays are pass by value. When passed into a function, a new array is created and passed in. 
 			\item Upon creation, the elements of an array are set to their zero-value. For example, \colorbox{code}{[2]float32} will create an array \colorbox{code}{[0.0, 0.0]}.
 		\end{itemize}
+		\subsubsection{Operators}
+		\begin{verbatim}
+	    ==    equal
+	    !=    not equal
+		\end{verbatim}
+		\begin{itemize}
+			\item Two arrays can be compared with '==' and '!=' if their element types are comparable with '==' and '!='. 
+			\item Two array values are equal if their corresponding elements are equal.
+		\end{itemize}
 		
 	\subsection{Struct}
 		A collection of named and unnamed fields, each of which has a type. Similar to a C struct.
@@ -239,19 +301,38 @@
 			\item Upon creation, the fields of a struct are set to their zero-value. 
 			\item See \url{https://golang.org/ref/spec#Struct_types}
 		\end{itemize}
+		\subsubsection{Operators}
+			\begin{verbatim}
+	    ==    equal
+	    !=    not equal
+			\end{verbatim}
+			\begin{itemize}
+				\item "Struct values are comparable if all their fields are comparable. Two struct values are equal if their corresponding non-blank fields are equal."
+				\item Does not support operator overloading. 
+			\end{itemize}
 		
 	\subsection{Pointer}
 		A pointer to an address in memory for a certain type. 
 		\begin{itemize}
-			\item Does not support pointer arithmetic. 
-			\item Can be deferenced with \colorbox{code}{*}.
 			\item The zero-value for pointers is \colorbox{code}{nil}. 
 		\end{itemize}
+		\subsubsection{Operators}
+			\begin{verbatim}
+	    *     dereference
+			
+	    ==    equal
+	    !=    not equal
+			\end{verbatim}
+			\begin{itemize}
+				\item Two pointers are equivalent if they point to the same variable or they are both \colorbox{code}{nil}. 
+				\item Does not support pointer arithmetic.
+			\end{itemize}
 		
 	\subsection{Function}	
 		\begin{itemize}
 			\item Functions are first-class citizens. They can be assigned to variables, returned from other functions, and so on.
 			\item The zero-value for functions is \colorbox{code}{nil}.
+			\item Cannot be compared to other functions. Exception: functions can be compared to \colorbox{code}{nil} with '==' and '!='.
 			\item For examples, see \url{https://golang.org/doc/codewalk/functions/}
 			\item For reference specification, see \url{https://golang.org/ref/spec#Function_types}
 		\end{itemize}
@@ -264,11 +345,20 @@
 			\item The zero-value for interfaces is \colorbox{code}{nil}.
 			\item See \url{https://golang.org/ref/spec#Interface_types}
 		\end{itemize}
+		\subsubsection{Operators}
+			\begin{verbatim}
+				    ==    equal
+				    !=    not equal
+			\end{verbatim}
+			\begin{itemize}
+				\item "Two interface values are equal if they have identical dynamic types and equal dynamic values or if both have value nil."
+			\end{itemize}
 		
 	\subsection{Slice}
 		A slice consists of a reference to the underlying array, the length of the slice, and the capacity of the underlying array. 				
 		\begin{itemize}
 			\item Use the builtin functions \colorbox{code}{cap} and \colorbox{code}{len} to get the capacity and length.
+			\item Cannot be compared to other slices. Exception: slices can be compared to \colorbox{code}{nil} with '==' and '!='.
 			\item See \url{https://blog.golang.org/go-slices-usage-and-internals}
 		\end{itemize}
 				
@@ -278,16 +368,28 @@
 			\item The key type must have \colorbox{code}{==} and \colorbox{code}{!=} defined. 
 			\item The zero-value for maps is \colorbox{code}{nil}.
 			\item Typically initialized with the builtin \colorbox{code}{make} function. For example, \colorbox{code}{var m map[int]string = make(map[int]string)}
+			\item Cannot be compared to other maps. Exception: maps can be compared to \colorbox{code}{nil} with '==' and '!='.
 			\item See \url{https://blog.golang.org/go-maps-in-action}
 		\end{itemize}
 		
 	\subsection{Channel}
-		Mechanism for message-passing. For application by concurrent applications.
+		Mechanism for message-passing. To be used by concurrent applications.
 		\begin{itemize}
 			\item A channel consists of a direction (send/receive/both), the type it handles, and the capacity for its buffer. 
 			\item The zero-value for channels is \colorbox{code}{nil}.
 			\item See \url{https://golang.org/ref/spec#Channel_types}
 		\end{itemize}
+		\subsubsection{Operators}
+			\begin{verbatim}
+				    <-    Receive operator
+				    
+				    ==    equal
+				    !=    not equal
+			\end{verbatim}
+			\begin{itemize}
+				\item For information about the receive operator, see \url{https://golang.org/ref/spec#Receive_operator}
+				\item Two channels are equal if they were created by the same call to \colorbox{code}{make} or they are both \colorbox{code}{nil}.
+			\end{itemize}
 	
 \section{Other Notes}
 	\subsection{Zero values}
