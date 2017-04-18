@@ -107,7 +107,7 @@
 					\item See \url{https://golang.org/pkg/unsafe/}
 				\end{itemize}
 		\end{itemize}
-		\subsubsection{Operators}
+		\subsubsection{Binary operators}
 			\begin{verbatim}
 				    +    sum  
 				    -    difference   
@@ -133,6 +133,12 @@
 			\begin{itemize}
 				\item The operands MUST be the same type i.e. cannot add uint and uint32, even if they are the same number of bits.  
 			\end{itemize}
+		\subsubsection{Unary operators}
+			\begin{verbatim}
+		   		+x                     
+	    -x    negation         
+	    ^x    bitwise complement 
+			\end{verbatim}
 		\subsubsection{Overflow}
 			\begin{itemize}
 				\item Constant declarations will raise an exception on overflow i.e. \begin{verbatim}var x uint8 = 300\end{verbatim} will raise an exception.
@@ -159,7 +165,7 @@
    	 			\item int32
   	  			\item int64
 			\end{itemize}
-			\subsubsection{Operators}
+			\subsubsection{Binary operators}
 				\begin{verbatim}
 					    +    sum  
 					    -    difference   
@@ -187,6 +193,12 @@
 					\item NOTE: The right operand of left and right shift must be an unsigned integer
 					\item As expected, right shift retains the signed'ness. Right shift by 1 is equivalent to division by 2.
 				\end{itemize}
+			\subsubsection{Unary operators}
+				\begin{verbatim}
+		   		+x                     
+	    -x    negation         
+	    ^x    bitwise complement 
+				\end{verbatim}
 			\subsubsection{Overflow}
 				\begin{itemize}
 					\item Constant declarations will raise an exception on overflow i.e. \begin{verbatim}var x int8 = 300\end{verbatim} will raise an exception.
