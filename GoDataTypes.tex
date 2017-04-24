@@ -370,6 +370,9 @@
 		A slice consists of a reference to the underlying array, the length of the slice, and the capacity of the underlying array. 				
 		\begin{itemize}
 			\item Use the builtin functions \colorbox{code}{cap} and \colorbox{code}{len} to get the capacity and length.
+			\item Can be instantiated with the builtin function \colorbox{code}{make}. The function signature for \colorbox{code}{make} is \\ \colorbox{code}{func make([]T, len int, cap int) []T}. For example, \colorbox{code}{var s []int = make([]int, 5, 15)} initializes \colorbox{code}{s} as a slice with the length of 5 and capacity of 15. 
+			\item Internals of a slice can be copied with the builtin function \colorbox{code}{copy}. The function signature for \colorbox{code}{copy} is \colorbox{code}{func copy(dst, src []T) int}.
+			\item Append to the end of a slice with the builtin function \colorbox{code}{append}. The function signature for \colorbox{code}{append} is \colorbox{code}{func append(s []T, x ...T) []T}. For example, \colorbox{code}{a = append(a, 1, 2, 3)}.
 			\item Cannot be compared to other slices. Exception: slices can be compared to \colorbox{code}{nil} with '==' and '!='.
 			\item See \url{https://blog.golang.org/go-slices-usage-and-internals}
 		\end{itemize}
