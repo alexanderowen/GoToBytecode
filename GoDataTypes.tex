@@ -445,6 +445,7 @@ Precedence    Operator
     2             &&
     1             ||
 	\end{verbatim}
+	Unary operators have the highest precedence. '--' and '++' have the absolute lowest. \\
 	See \url{https://golang.org/ref/spec#Operators}
 	\subsection{Memory allocation}
 		When possible, the Go compilers will allocate variables that are local to a function in that function's stack frame. However, if the compiler cannot prove that the variable is not referenced after the function returns, then the compiler must allocate the variable on the garbage-collected heap to avoid dangling pointer errors. See \url{https://golang.org/doc/faq#stack_or_heap}
