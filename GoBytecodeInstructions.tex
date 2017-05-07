@@ -507,6 +507,34 @@
 		\end{itemize}
 		TODO: How will strings be stored in bytecode? \\
 		Most string conversions must be done with the \colorbox{code}{strconv} package. See \url{https://golang.org/pkg/strconv/}.
+		\newpage 
+		
+		\subsection*{strlit}
+			\addcontentsline{toc}{subsection}{strlit}
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Create a string literal
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{strlit} \\ \hline \textit{name} \\ \hline \textit{len} \\ \hline \textit{literal} \\ \hline \end{tabular}
+				\item [\textbf{Operand Stack}] No change
+				\item [\textbf{Description}] \textit{strlit} creates a string literal and creates a reference to it named \textit{name}. \textit{len} specifies the number of bytes that comprise the literal. \\ \\
+				Future uses for the string can be accessed through the reference \textit{name}.			
+				\item [\textbf{Instruction Size}]\textit{strlit} - 2 bytes \\
+					\textit{name} - 2 bytes \\
+					\textit{len} - 4 bytes \\
+					\textit{literal} - \textit{len} bytes  
+				\item [\textbf{Example}]\colorbox{code}{strlit s 5 68 65 6c 6c 6f} creates the string which corresponds to "hello". 
+			\end{labeling}	
+		\newpage
+		
+		\subsection*{pushstr}
+			\addcontentsline{toc}{subsection}{pushstr}
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Push a string reference onto the operand stack
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{pushstr} \\ \hline \textit{name} \\ \hline \end{tabular}
+				\item [\textbf{Operand Stack}] \textit{... --\textgreater} \\
+										\textit{..., reference}
+				\item [\textbf{Description}] The string referenced by \textit{name} must exist. A reference to the string is pushed onto the stack, not the string itself. 
+			\end{labeling}	
+		\newpage
 	
 
 \end{document}
