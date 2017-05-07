@@ -19,6 +19,63 @@
 \begin{document}
 	\tableofcontents
 	\newpage
+	
+	\section{Control instructions}
+		\subsection*{label}
+			\addcontentsline{toc}{subsection}{label} 
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Create a label
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{label} \\ \hline \textit{name} \\ \hline \end{tabular}
+				\item [\textbf{Operand Stack}] No change
+				\item [\textbf{Description}] 	Creates a label at the given location that can be identified by \textit{name}. Jump instructions must jump to named label. Jumps made to \textit{name} will resume execution on the proceeding instruction. 
+			\end{labeling}
+		\newpage 
+		
+		\subsection*{jmp}
+			\addcontentsline{toc}{subsection}{jmp} 
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Unconditional jump to a label
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{jmp} \\ \hline \textit{name} \\ \hline \end{tabular}
+				\item [\textbf{Operand Stack}] No change
+				\item [\textbf{Description}] 	Unconditional jump to a label with \textit{name}. \\ \\ 
+				Execution resumes at the label marked with \textit{name}.
+			\end{labeling}
+		\newpage
+		
+		\subsection*{invokefunction}
+			\addcontentsline{toc}{subsection}{invokefunction} 
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Invoke a function
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{invokefunction} \\ \hline \textit{name} \\ \hline \end{tabular}
+				\item [\textbf{Operand Stack}] \textit{..., }[\textit{arg1}, [\textit{arg2, ...}]] --\textgreater  \\
+										\textit{...}
+				\item [\textbf{Description}] Invokes the function identified as \textit{name}. The operand stack must contain the arguments, where the number, type, and order of the values must be consistent with the descriptor of the function. \\ \\
+				 The argument values are popped from the operand stack. A new frame is created on the stack for the method being invoked. The argument values are consecutively made the values of local variables of the new frame, with arg1 in local variable 0 and so on. The new frame is then made current, and the program counter is set to the first instruction of the function to be invoked. Execution continues with the first instruction of the function.
+			\end{labeling} 
+		\newpage
+		
+		\subsection*{invokemethod}
+			\addcontentsline{toc}{subsection}{invokemethod} 
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Invoke a method
+				\item [\textbf{Format}] TODO
+				\item [\textbf{Operand Stack}] TODO
+				\item [\textbf{Description}] TODO: How to call methods? 
+			\end{labeling} 
+		\newpage
+		
+		\subsection*{return}
+			\addcontentsline{toc}{subsection}{return} 
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Return from a void function
+				\item [\textbf{Format}] \fbox{\textit{return}}
+				\item [\textbf{Operand Stack}] \textit{... --\textgreater } \\
+										{[empty]}
+				\item [\textbf{Description}] 	The current function must have no return type. \\ \\
+				The interpreter returns control to the caller of the function, restoring the frame of the caller. 
+			\end{labeling} 
+		\newpage
+
 
 	\section{int64}
 		\begin{itemize}
@@ -59,7 +116,7 @@
 										\textit{..., result}
 				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type int64. The values are popped off the operand stack. The int64 \textit{result} is pushed onto the stack. \\ \\
 				The result is the 64 low-order bits in twos-complement format. 
-				Overflow may occur as a result of this operation. Despite the fact that overflow can occur, \textit{i64add} never throws a runtime exception. 			\end{labeling}
+				Overflow may occur as a result of this operation. Despite the fact that overflow can occur, \textit{i64add} never throws a runtime exception. 							\end{labeling}
 			
 		\newpage
 		
@@ -209,10 +266,11 @@
 			\addcontentsline{toc}{subsection}{if\_i64eq}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if two int64s are equal 
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_i64eq} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? With labels, like x86, or byte numbers as with Java, or some other way? 
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type int64. Both values are popped off the operand stacked and compared. \\ \\
+				If the two values are equal, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 			
 		\newpage
@@ -220,10 +278,11 @@
 			\addcontentsline{toc}{subsection}{if\_i64ne}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if two int64s are not equal
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_i64ne} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? Same as if\_i64eq
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type int64. Both values are popped off the operand stacked and compared. \\ \\
+				If the two values are not equal, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		
@@ -231,10 +290,11 @@
 			\addcontentsline{toc}{subsection}{if\_i64lt}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if int64 is less than other int64
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_i64lt} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? Same as if\_i64eq
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type int64. Both values are popped off the operand stacked and compared. \\ \\
+				If \textit{value1} is less than \textit{value2}, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		
@@ -242,20 +302,22 @@
 			\addcontentsline{toc}{subsection}{if\_i64le}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if int64 is less than or equal to other int64
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_i64le} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? Same as if\_i64eq
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type int64. Both values are popped off the operand stacked and compared. \\ \\
+				If \textit{value1} is less than or equal to \textit{value2}, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		\subsection*{if\_i64gt}
 			\addcontentsline{toc}{subsection}{if\_i64gt}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if int64 is greater than other int64
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_i64gt} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? Same as if\_i64eq
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type int64. Both values are popped off the operand stacked and compared. \\ \\
+				If \textit{value1} is greater than \textit{value2}, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		
@@ -263,10 +325,11 @@
 			\addcontentsline{toc}{subsection}{if\_i64ge}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if int64 is greater than or equal to other int64
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_i64ge} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? Same as if\_i64eq
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type int64. Both values are popped off the operand stacked and compared. \\ \\
+				If \textit{value1} is greater than or equal to \textit{value2}, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		\subsection*{i64tof64}
@@ -358,10 +421,11 @@
 			\addcontentsline{toc}{subsection}{if\_f64eq}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if two float64s are equal 
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_f64eq} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? With labels, like x86, or byte numbers as with Java, or some other way? 
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type float64. Both values are popped off the operand stacked and compared. \\ \\
+				If the two values are equal, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		
@@ -369,10 +433,11 @@
 			\addcontentsline{toc}{subsection}{if\_f64ne}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if two float64s are not equal 
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_f64ne} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? Same as with if\_f64eq
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type float64. Both values are popped off the operand stacked and compared. \\ \\
+				If the two values are not equal, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		
@@ -380,10 +445,11 @@
 			\addcontentsline{toc}{subsection}{if\_f64lt}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if a float64 is less than other float64
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_f64lt} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? Same as with if\_f64eq
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type float64. Both values are popped off the operand stacked and compared. \\ \\
+				If \textit{value1} is less than \textit{value2}, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		
@@ -391,10 +457,11 @@
 			\addcontentsline{toc}{subsection}{if\_f64le}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if a float64 is less than or equal to other float64
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_f64le} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? Same as with if\_f64eq
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type float64. Both values are popped off the operand stacked and compared. \\ \\
+				If \textit{value1} is less than or equal to \textit{value2}, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		
@@ -402,10 +469,11 @@
 			\addcontentsline{toc}{subsection}{if\_f64gt}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if a float64 is greater than other float64
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_f64gt} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? Same as with if\_f64eq
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type float64. Both values are popped off the operand stacked and compared. \\ \\
+				If \textit{value1} is greater than \textit{value2}, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		
@@ -413,10 +481,11 @@
 			\addcontentsline{toc}{subsection}{if\_f64ge}
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Check if a float64 is greater than or equal other float64
-				\item [\textbf{Format}] \fbox{\textit{TODO}}
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{if\_f64ge} \\ \hline \textit{name} \\ \hline \end{tabular}
 				\item [\textbf{Operand Stack}] \textit{..., value1, value2 --\textgreater} \\
 										\textit{..., }
-				\item [\textbf{Description}] TODO: How to handle jumps? Same as with if\_f64eq
+				\item [\textbf{Description}] Both \textit{value1} and \textit{value2} must be of type float64. Both values are popped off the operand stacked and compared. \\ \\
+				If \textit{value1} is greater than or equal to \textit{value2}, then execution resumes at the label marked with \textit{name}. Otherwise, execution resumes on the proceeding instruction. 
 			\end{labeling}	
 		\newpage
 		\subsection*{f64toi64}
