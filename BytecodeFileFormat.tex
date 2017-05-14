@@ -1,0 +1,48 @@
+\documentclass[12pt]{article}
+
+
+\usepackage{fancyvrb}
+%\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\usepackage[usenames, dvipsnames]{xcolor}
+\definecolor{code}{RGB}{220,220,220}
+
+\newcommand*{\formalfont}{\fontfamily{ptm}\selectfont}
+
+\begin{document}
+	\tableofcontents
+	\newpage
+	
+	\section{.gobc File Format}
+		This document describes the Golang bytecode file format, {\formalfont .gobc}. Each {\formalfont .gobc} file contains the bytecode for a Go source file. \\ \\
+		A class file consists of a stream of 8-bit bytes. All 16-bit, 32-bit, and 64-bit quantities are constructed by reading in two, four, and eight consecutive 8-bit bytes, respectively. \\ \\
+		This document uses a short-hand for specifying the number of bytes associated with the data. The types u8, u16, u32, and u64 represent a one-, two-, four- or eight-byte quantity, respectively. \\ \\
+		This document presents the {\formalfont .gobc} file format using pseudo-code of C syntax. Arrays are zero-indexed. 
+		
+		\subsection{The gobcFile structure}
+			A {\formalfont .gobc} file consists of a single {\formalfont gobcFile} structure: \\ 
+			\begin{Verbatim}[frame=single]
+gobcFile {	
+	u32           magicNumber
+	u32           functionCount
+	functionInfo  functions[functionCount]
+}
+			\end{Verbatim}
+			The items that appear in the {\formalfont gobcFile} structure are defined below: \\ \\
+			\textbf{magicNumber} \\
+			The {\formalfont magicNumber} item supplies the magic number identifying the {\formalfont gobc} file format; it has the value \colorbox{code}{0xCAFEDEAD}. \\ \\
+			\textbf{functionCount} \\
+			The {\formalfont functionCount} item specifies the number of functions defined in the file in the global scope. \\ \\
+			\textbf{functions} \\
+			The {\formalfont functions} item is an array where each element is a {\formalfont functionInfo} structure giving a complete description of the function. 
+		
+	
+
+\end{document}
