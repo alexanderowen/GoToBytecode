@@ -15,6 +15,7 @@
 \definecolor{code}{RGB}{220,220,220}
 
 \newcommand*{\formalfont}{\fontfamily{ptm}\selectfont}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
 
 \begin{document}
 	\textbf{Disclaimer} \\ This document is not comprehensive of all Golang features. 
@@ -27,7 +28,7 @@
 		This document uses a short-hand for specifying the number of bytes associated with the data. The types u8, u16, u32, and u64 represent a one-, two-, four- or eight-byte quantity, respectively. \\ \\
 		This document presents the {\formalfont .gobc} file format using pseudo-code of C syntax. Arrays are zero-indexed. 
 		
-		\subsection{The gobcFile structure}
+		\subsection{gobcFile structure}
 			A {\formalfont .gobc} file consists of a single {\formalfont gobcFile} structure: \\ 
 			\begin{Verbatim}[frame=single]
 gobcFile {	
@@ -38,13 +39,13 @@ gobcFile {
 			\end{Verbatim}
 			The items that appear in the {\formalfont gobcFile} structure are defined below: \\ \\
 			\textbf{magicNumber} \\
-				The {\formalfont magicNumber} item supplies the magic number identifying the {\formalfont gobc} file format; it has the value \colorbox{code}{0xCAFEDEAD}. \\ \\
+				\tab The {\formalfont magicNumber} item supplies the magic number identifying the {\formalfont gobc} file format; it has the value \colorbox{code}{0xCAFEDEAD}. \\ \\
 			\textbf{functionCount} \\
-				The {\formalfont functionCount} item specifies the number of functions defined in the file in the global scope. \\ \\
+				\tab The {\formalfont functionCount} item specifies the number of functions defined in the file in the global scope. \\ \\
 			\textbf{functions} \\
-				The {\formalfont functions} item is an array where each element is a {\formalfont functionInfo} structure giving a complete description of the function. 
+				\tab The {\formalfont functions} item is an array where each element is a {\formalfont functionInfo} structure giving a complete description of the function. 
 			
-		\subsection{The functionInfo structure}
+		\subsection{functionInfo structure}
 			Each Golang function is described by a {\formalfont functionInfo} structure. \\ \\
 			\textbf{TODO}: How to handle anonymous and first-class functions? \\ \\
 			\begin{Verbatim}[frame=single]
@@ -58,7 +59,7 @@ functionInfo {
 			\end{Verbatim}
 			The items that appear in the {\formalfont functionInfo} structure are defined below: \\ \\
 			\textbf{accessFlags} \\
-			The value of the accessFlags item is a mask of flags used to denote access permission to and properties of this function. The interpretation of each flag, when set, is shown below.
+			\tab The value of the accessFlags item is a mask of flags used to denote access permission to and properties of this function. The interpretation of each flag, when set, is shown below.
 			\begin{center}
 			\begin{tabular}{ |c|c|c| } 
 				\hline 
@@ -69,13 +70,13 @@ functionInfo {
 			\end{tabular}
 			\end{center} 
 			\textbf{nameLength} \\
-				The {\formalfont nameLength} item specifies the number of bytes that comprise the function name. \\ \\
+				\tab The {\formalfont nameLength} item specifies the number of bytes that comprise the function name. \\ \\
 			\textbf{name} \\
-				The {\formalfont name} item is an array of bytes that comprise the function name. \\ \\
+				\tab The {\formalfont name} item is an array of bytes that comprise the function name. \\ \\
 			\textbf{attributesCount} \\
-				The {\formalfont attributesCount} item specifies the number of attributes of this function. \\ \\
+				\tab The {\formalfont attributesCount} item specifies the number of attributes of this function. \\ \\
 			\textbf{attributes} \\
-				The {\formalfont attributes} item is an array where each element is an {\formalfont attributesInfo} structure specifying an attribute. \\ \\
+				\tab The {\formalfont attributes} item is an array where each element is an {\formalfont attributesInfo} structure specifying an attribute. \\ \\
 				The {\formalfont functionInfo} structure can contain the following attribute structures:
 				\begin{itemize}
 					\item {\formalfont Code}
@@ -85,13 +86,21 @@ functionInfo {
 			Attributes are attached to various structures to provide more detailed information. All attributes share the following general structure: \\ \\
 			\begin{Verbatim}[frame=single]
 attributeInfo {	
-	u8              attributeType
-	u64             attributeLength
-	u8	      name[nameLength]
-	u16	     attributesCount
-	attributesInfo  attributes[attributesCount]
+	u8        attributeType
+	u64       attributeLength
+	u1        data[attributesLength]
 }
 			\end{Verbatim}
+			The items that appear in the {\formalfont attributeInfo} structure are defined below: \\ \\
+			\textbf{attributeType} \\
+				\tab The {\formalfont attributeType} item specifies which attribute the structure represents. \\ \\
+			\textbf{attributeLength} \\
+				\tab The {\formalfont attributeLength} item specifies the length of the subsequent information in bytes. The length does not include the initial nine bytes that contain the attributeType and attributeLength items. \\ \\
+			\textbf{data} \\
+				\tab The {\formalfont data} item contains the data of the attribute. Each attribute will have a different structure for this data. \\ \\
+			
+			\subsubsection{Code attribute structure}
+				The Code attribute is a variable-length attribute in the attributes table of a functionInfo structure. A Code attribute contains the bytecode instructions and auxiliary information for a single function.
 						
 	
 
