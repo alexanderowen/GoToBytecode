@@ -79,7 +79,7 @@ functionInfo {
 				\tab The {\formalfont attributes} item is an array where each element is an {\formalfont attributesInfo} structure specifying an attribute. \\ \\
 				The {\formalfont functionInfo} structure can contain the following attribute structures:
 				\begin{itemize}
-					\item {\formalfont Code}
+					\item {\formalfont codeAttribute}
 				\end{itemize}
 				
 		\subsection{attributeInfo structures}
@@ -88,7 +88,7 @@ functionInfo {
 attributeInfo {	
 	u8        attributeType
 	u64       attributeLength
-	u1        data[attributesLength]
+	u8        data[attributesLength]
 }
 			\end{Verbatim}
 			The items that appear in the {\formalfont attributeInfo} structure are defined below: \\ \\
@@ -99,8 +99,25 @@ attributeInfo {
 			\textbf{data} \\
 				\tab The {\formalfont data} item contains the data of the attribute. Each attribute will have a different structure for this data. \\ \\
 			
-			\subsubsection{Code attribute structure}
-				The Code attribute is a variable-length attribute in the attributes table of a functionInfo structure. A Code attribute contains the bytecode instructions and auxiliary information for a single function.
+			\subsubsection{codeAttribute structure}
+				The code attribute is a variable-length attribute in the attributes table of a functionInfo structure. A code attribute contains the instructions and auxiliary information for a single function.
+			\begin{Verbatim}[frame=single]
+codeAttribute {	
+	u8        attributeType
+	u64       attributeLength
+	u64       codeLength
+	u8        code[codeLength]
+}
+			\end{Verbatim}
+			The items that appear in the {\formalfont codeAttribute} structure are defined below: \\ \\
+			\textbf{attributeType} \\
+				\tab The {\formalfont attributeType} item specifies which attribute the structure represents. The value for {\formalfont codeAttribute} is \colorbox{code}{0x01} \\ \\
+			\textbf{attributeLength} \\
+				\tab The {\formalfont attributeLength} item specifies the length of the subsequent information in bytes. The length does not include the initial nine bytes that contain the attributeType and attributeLength items. \\ \\
+			\textbf{codeLength} \\
+				\tab The {\formalfont codeLength} item specifies the length of the {\formalfont code} item. \\ \\
+			\textbf{code} \\
+				\tab The {\formalfont code} item is an array which contains the instructions of the function. Each instruction must be read 2 bytes at a time. Each instruction has a deterministic length that can be read, which is given in the instruction specification. 
 						
 	
 
