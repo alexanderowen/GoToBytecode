@@ -17,6 +17,7 @@
 \newcommand*{\formalfont}{\fontfamily{ptm}\selectfont}
 
 \begin{document}
+	\textbf{Disclaimer} \\ This document is not comprehensive of all Golang features. 
 	\tableofcontents
 	\newpage
 	
@@ -31,18 +32,67 @@
 			\begin{Verbatim}[frame=single]
 gobcFile {	
 	u32           magicNumber
-	u32           functionCount
+	u64           functionCount
 	functionInfo  functions[functionCount]
 }
 			\end{Verbatim}
 			The items that appear in the {\formalfont gobcFile} structure are defined below: \\ \\
 			\textbf{magicNumber} \\
-			The {\formalfont magicNumber} item supplies the magic number identifying the {\formalfont gobc} file format; it has the value \colorbox{code}{0xCAFEDEAD}. \\ \\
+				The {\formalfont magicNumber} item supplies the magic number identifying the {\formalfont gobc} file format; it has the value \colorbox{code}{0xCAFEDEAD}. \\ \\
 			\textbf{functionCount} \\
-			The {\formalfont functionCount} item specifies the number of functions defined in the file in the global scope. \\ \\
+				The {\formalfont functionCount} item specifies the number of functions defined in the file in the global scope. \\ \\
 			\textbf{functions} \\
-			The {\formalfont functions} item is an array where each element is a {\formalfont functionInfo} structure giving a complete description of the function. 
-		
+				The {\formalfont functions} item is an array where each element is a {\formalfont functionInfo} structure giving a complete description of the function. 
+			
+		\subsection{The functionInfo structure}
+			Each Golang function is described by a {\formalfont functionInfo} structure. \\ \\
+			\textbf{TODO}: How to handle anonymous and first-class functions? \\ \\
+			\begin{Verbatim}[frame=single]
+functionInfo {	
+	u8              accessFlags
+	u64             nameLength
+	u8	      name[nameLength]
+	u32	     attributesCount
+	attributesInfo  attributes[attributesCount]
+}
+			\end{Verbatim}
+			The items that appear in the {\formalfont functionInfo} structure are defined below: \\ \\
+			\textbf{accessFlags} \\
+			The value of the accessFlags item is a mask of flags used to denote access permission to and properties of this function. The interpretation of each flag, when set, is shown below.
+			\begin{center}
+			\begin{tabular}{ |c|c|c| } 
+				\hline 
+				Flag & Value & Description \\ [0.5ex] 
+ 				\hline \hline
+				EXPORTED & 0x0001 & Exported function; can be accessed outside the package \\
+				\hline 
+			\end{tabular}
+			\end{center} 
+			\textbf{nameLength} \\
+				The {\formalfont nameLength} item specifies the number of bytes that comprise the function name. \\ \\
+			\textbf{name} \\
+				The {\formalfont name} item is an array of bytes that comprise the function name. \\ \\
+			\textbf{attributesCount} \\
+				The {\formalfont attributesCount} item specifies the number of attributes of this function. \\ \\
+			\textbf{attributes} \\
+				The {\formalfont attributes} item is an array where each element is an {\formalfont attributesInfo} structure specifying an attribute. \\ \\
+				The {\formalfont functionInfo} structure can contain the following attribute structures:
+				\begin{itemize}
+					\item {\formalfont Code}
+				\end{itemize}
+				
+		\subsection{attributeInfo structures}
+			Attributes are attached to various structures to provide more detailed information. All attributes share the following general structure: \\ \\
+			\begin{Verbatim}[frame=single]
+attributeInfo {	
+	u8              attributeType
+	u64             attributeLength
+	u8	      name[nameLength]
+	u16	     attributesCount
+	attributesInfo  attributes[attributesCount]
+}
+			\end{Verbatim}
+						
 	
 
 \end{document}
