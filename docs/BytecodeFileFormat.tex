@@ -1,0 +1,124 @@
+\documentclass[12pt]{article}
+
+
+\usepackage{fancyvrb}
+%\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\usepackage[usenames, dvipsnames]{xcolor}
+\definecolor{code}{RGB}{220,220,220}
+
+\newcommand*{\formalfont}{\fontfamily{ptm}\selectfont}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+\begin{document}
+	\textbf{Disclaimer} \\ This document is not comprehensive of all Golang features. 
+	\tableofcontents
+	\newpage
+	
+	\section{.gobc File Format}
+		This document describes the Golang bytecode file format, {\formalfont .gobc}. Each {\formalfont .gobc} file contains the bytecode for a Go source file. \\ \\
+		A class file consists of a stream of 8-bit bytes. All 16-bit, 32-bit, and 64-bit quantities are constructed by reading in two, four, and eight consecutive 8-bit bytes, respectively. \\ \\
+		This document uses a short-hand for specifying the number of bytes associated with the data. The types u8, u16, u32, and u64 represent a one-, two-, four- or eight-byte quantity, respectively. \\ \\
+		This document presents the {\formalfont .gobc} file format using pseudo-code of C syntax. Arrays are zero-indexed. 
+		
+		\subsection{gobcFile structure}
+			A {\formalfont .gobc} file consists of a single {\formalfont gobcFile} structure: \\ 
+			\begin{Verbatim}[frame=single]
+gobcFile {	
+	u32           magicNumber
+	u64           functionCount
+	functionInfo  functions[functionCount]
+}
+			\end{Verbatim}
+			The items that appear in the {\formalfont gobcFile} structure are defined below: \\ \\
+			\textbf{magicNumber} \\
+				\tab The {\formalfont magicNumber} item supplies the magic number identifying the {\formalfont gobc} file format; it has the value \colorbox{code}{0xCAFEDEAD}. \\ \\
+			\textbf{functionCount} \\
+				\tab The {\formalfont functionCount} item specifies the number of functions defined in the file in the global scope. \\ \\
+			\textbf{functions} \\
+				\tab The {\formalfont functions} item is an array where each element is a {\formalfont functionInfo} structure giving a complete description of the function. 
+			
+		\subsection{functionInfo structure}
+			Each Golang function is described by a {\formalfont functionInfo} structure. \\ \\
+			\textbf{TODO}: How to handle anonymous and first-class functions? \\ \\
+			\begin{Verbatim}[frame=single]
+functionInfo {	
+	u8              accessFlags
+	u64             nameLength
+	u8	      name[nameLength]
+	u32	     attributesCount
+	attributesInfo  attributes[attributesCount]
+}
+			\end{Verbatim}
+			The items that appear in the {\formalfont functionInfo} structure are defined below: \\ \\
+			\textbf{accessFlags} \\
+			\tab The value of the accessFlags item is a mask of flags used to denote access permission to and properties of this function. The interpretation of each flag, when set, is shown below.
+			\begin{center}
+			\begin{tabular}{ |c|c|c| } 
+				\hline 
+				Flag & Value & Description \\ [0.5ex] 
+ 				\hline \hline
+				EXPORTED & 0x0001 & Exported function; can be accessed outside the package \\
+				\hline 
+			\end{tabular}
+			\end{center} 
+			\textbf{nameLength} \\
+				\tab The {\formalfont nameLength} item specifies the number of bytes that comprise the function name. \\ \\
+			\textbf{name} \\
+				\tab The {\formalfont name} item is an array of bytes that comprise the function name. \\ \\
+			\textbf{attributesCount} \\
+				\tab The {\formalfont attributesCount} item specifies the number of attributes of this function. \\ \\
+			\textbf{attributes} \\
+				\tab The {\formalfont attributes} item is an array where each element is an {\formalfont attributesInfo} structure specifying an attribute. \\ \\
+				The {\formalfont functionInfo} structure can contain the following attribute structures:
+				\begin{itemize}
+					\item {\formalfont codeAttribute}
+				\end{itemize}
+				
+		\subsection{attributeInfo structures}
+			Attributes are attached to various structures to provide more detailed information. All attributes share the following general structure: \\ \\
+			\begin{Verbatim}[frame=single]
+attributeInfo {	
+	u8        attributeType
+	u64       attributeLength
+	u8        data[attributesLength]
+}
+			\end{Verbatim}
+			The items that appear in the {\formalfont attributeInfo} structure are defined below: \\ \\
+			\textbf{attributeType} \\
+				\tab The {\formalfont attributeType} item specifies which attribute the structure represents. \\ \\
+			\textbf{attributeLength} \\
+				\tab The {\formalfont attributeLength} item specifies the length of the subsequent information in bytes. The length does not include the initial nine bytes that contain the attributeType and attributeLength items. \\ \\
+			\textbf{data} \\
+				\tab The {\formalfont data} item contains the data of the attribute. Each attribute will have a different structure for this data. \\ \\
+			
+			\subsubsection{codeAttribute structure}
+				The code attribute is a variable-length attribute in the attributes table of a functionInfo structure. A code attribute contains the instructions and auxiliary information for a single function.
+			\begin{Verbatim}[frame=single]
+codeAttribute {	
+	u8        attributeType
+	u64       attributeLength
+	u64       codeLength
+	u8        code[codeLength]
+}
+			\end{Verbatim}
+			The items that appear in the {\formalfont codeAttribute} structure are defined below: \\ \\
+			\textbf{attributeType} \\
+				\tab The {\formalfont attributeType} item specifies which attribute the structure represents. The value for {\formalfont codeAttribute} is \colorbox{code}{0x01} \\ \\
+			\textbf{attributeLength} \\
+				\tab The {\formalfont attributeLength} item specifies the length of the subsequent information in bytes. The length does not include the initial nine bytes that contain the attributeType and attributeLength items. \\ \\
+			\textbf{codeLength} \\
+				\tab The {\formalfont codeLength} item specifies the length of the {\formalfont code} item. \\ \\
+			\textbf{code} \\
+				\tab The {\formalfont code} item is an array which contains the instructions of the function. Each instruction must be read 2 bytes at a time. Each instruction has a deterministic length that can be read, which is given in the instruction specification. 
+						
+	
+
+\end{document}
