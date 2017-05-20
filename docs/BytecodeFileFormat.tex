@@ -78,17 +78,18 @@ functionInfo {
 			\textbf{descriptorLength} \\
 				\tab The {\formalfont descriptorLength} item specifies the number of bytes in {\formalfont descriptor}. \\ \\
 			\textbf{descriptor} \\
-				\tab The {\formalfont descriptor} item is an array of bytes that comprise the function descriptor. The descriptor describes the type of the parameters and the return types. It should be evaluated as a string. \\ \\
+				\tab The {\formalfont descriptor} item is an array of bytes that comprise the function descriptor. The descriptor describes the type of the parameters and the return types. It should be evaluated as a string. See \hyperref[sec:functionDescriptor]{Function Descriptor} for more details.  \\ \\
 			\textbf{attributesCount} \\
 				\tab The {\formalfont attributesCount} item specifies the number of attributes of this function. \\ \\
 			\textbf{attributes} \\
 				\tab The {\formalfont attributes} item is an array where each element is an {\formalfont attributesInfo} structure specifying an attribute. \\ \\
 				The {\formalfont functionInfo} structure can contain the following attribute structures:
 				\begin{itemize}
-					\item {\formalfont codeAttribute}
+					\item {\formalfont \hyperref[sec:codeAttribute]{codeAttribute}}
 				\end{itemize}
 				
-			\subsubsection{Function descriptor}
+			\subsubsection{Function Descriptor}
+			\label{sec:functionDescriptor}
 				The function descriptor represents the parameters that the function takes and the values that it returns. It should be evaluated as a string. It is described by the following grammar:
 				\begin{Verbatim}[frame=single]
 functionDescriptor -> "(" parameterDesc* ")" returnDesc* 
@@ -120,6 +121,7 @@ attributeInfo {
 				\tab The {\formalfont data} item contains the data of the attribute. Each attribute will have a different structure for this data. \\ \\
 			
 			\subsubsection{codeAttribute structure}
+			\label{sec:codeAttribute}
 				The code attribute is a variable-length attribute in the attributes table of a functionInfo structure. A code attribute contains the instructions and auxiliary information for a single function.
 			\begin{Verbatim}[frame=single]
 codeAttribute {	
