@@ -53,6 +53,8 @@ functionInfo {
 	u8              accessFlags
 	u64             nameLength
 	u8	      name[nameLength]
+	u64             descriptorLength
+	u8              descriptor[descriptorLength]
 	u32	     attributesCount
 	attributesInfo  attributes[attributesCount]
 }
@@ -70,9 +72,13 @@ functionInfo {
 			\end{tabular}
 			\end{center} 
 			\textbf{nameLength} \\
-				\tab The {\formalfont nameLength} item specifies the number of bytes that comprise the function name. \\ \\
+				\tab The {\formalfont nameLength} item specifies the number of bytes in {\formalfont name}. \\ \\
 			\textbf{name} \\
-				\tab The {\formalfont name} item is an array of bytes that comprise the function name. \\ \\
+				\tab The {\formalfont name} item is an array of bytes that comprise the function name. It can be evaluated as a string. \\ \\
+			\textbf{descriptorLength} \\
+				\tab The {\formalfont descriptorLength} item specifies the number of bytes in {\formalfont descriptor}. \\ \\
+			\textbf{descriptor} \\
+				\tab The {\formalfont descriptor} item is an array of bytes that comprise the function descriptor. The descriptor describes the type of the parameters and the return types. It should be evaluated as a string. \\ \\
 			\textbf{attributesCount} \\
 				\tab The {\formalfont attributesCount} item specifies the number of attributes of this function. \\ \\
 			\textbf{attributes} \\
@@ -81,6 +87,20 @@ functionInfo {
 				\begin{itemize}
 					\item {\formalfont codeAttribute}
 				\end{itemize}
+				
+			\subsubsection{Function descriptor}
+				The function descriptor represents the parameters that the function takes and the values that it returns. It should be evaluated as a string. It is described by the following grammar:
+				\begin{Verbatim}[frame=single]
+functionDescriptor -> "(" parameterDesc* ")" returnDesc* 
+parameterDesc -> Type
+returnDesc -> Type
+Type -> I64     // int64
+      | F64     // float64
+      | S       // string
+      | V       // void
+				\end{Verbatim}
+				For example, the descriptor \colorbox{code}{(I64S)SI64} takes two arguments, an int64 and a string, and returns two values, a string and an int64.
+				
 				
 		\subsection{attributeInfo structures}
 			Attributes are attached to various structures to provide more detailed information. All attributes share the following general structure: \\ \\
