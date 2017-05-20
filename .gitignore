@@ -1,5 +1,9 @@
+# LaTeX files
 *.log
 *.aux
 *.out
 *.toc
 *.gz
+
+# Vim files
+*.swp
