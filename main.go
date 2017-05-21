@@ -15,6 +15,8 @@ import (
 	"unicode"
 )
 
+var descMap = make(map[string]string)
+
 func i64tobyteslice(x int64) []byte {
 	b := make([]byte, 8)
 	b[7] = byte(x)
@@ -29,6 +31,11 @@ func i64tobyteslice(x int64) []byte {
 }
 
 func main() {
+	descMap["int64"] = "I64"
+	descMap["float64"] = "F64"
+	descMap["string"] = "S"
+	descMap["nil"] = "V"
+
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s filename\n", os.Args[0])
 		os.Exit(-1)
@@ -100,6 +107,29 @@ func main() {
 			}
 			funcs[idx] = append(funcs[idx], i64tobyteslice(int64(len(name)))...) // length of name
 			funcs[idx] = append(funcs[idx], []byte(name)...)
+
+			// descriptor
+			typ := t.Type
+			desc := "("
+			if typ.Params.List == nil {
+				desc += "V"
+			} else {
+				for i := range typ.Params.List {
+					s := fmt.Sprintf("%s", typ.Params.List[i].Type)
+					desc += descMap[s]
+				}
+			}
+			desc += ")"
+			if typ.Results == nil {
+				desc += "V"
+			} else {
+				for i := range typ.Results.List {
+					s := fmt.Sprintf("%s", typ.Results.List[i].Type)
+					desc += descMap[s]
+				}
+			}
+			funcs[idx] = append(funcs[idx], []byte(desc)...)
+
 		default:
 
 		}
