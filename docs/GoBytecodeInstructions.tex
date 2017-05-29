@@ -71,13 +71,58 @@
 			\begin{labeling}{Operand Stack Size}
 				\item [\textbf{Operation}] Return from a void function
 				\item [\textbf{Format}] \fbox{\textit{return}}
-				\item [\textbf{Operand Stack}] \textit{... --\textgreater } \\
+				\item [\textbf{Operand Stack}] \textit{..., --\textgreater } \\
 										{[empty]}
 				\item [\textbf{Description}] 	The current function must have no return type. \\ \\
 				The interpreter returns control to the caller of the function, restoring the frame of the caller. 
 			\end{labeling} 
 		\newpage
-
+		
+	\section{Load instructions}
+		\subsection*{i64load}
+			\addcontentsline{toc}{subsection}{i64load} 
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Load an int64 from a local variable onto the operand stack
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{i64load} \\ \hline \textit{index} \\ \hline \end{tabular}
+				\item [\textbf{Operand Stack}] \textit{..., --\textgreater } \\
+										{..., value}
+				\item [\textbf{Description}] 	Accesses the entry of the local variable table at index \textit{index} and pushes the value onto the operand stack. The entry at that index must be of type int64. 
+			\end{labeling}
+		\newpage 
+		
+		\subsection*{f64load}
+			\addcontentsline{toc}{subsection}{f64load} 
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Load a float64 from a local variable onto the operand stack
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{f64load} \\ \hline \textit{index} \\ \hline \end{tabular}
+				\item [\textbf{Operand Stack}] \textit{..., --\textgreater } \\
+										{..., value}
+				\item [\textbf{Description}] 	Accesses the entry of the local variable table at index \textit{index} and pushes the value onto the operand stack. The entry at that index must be of type float64. 
+			\end{labeling}
+		\newpage 
+		
+	\section{Store instructions}
+		\subsection*{i64store}
+			\addcontentsline{toc}{subsection}{i64store} 
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Store an int64 from the operand stack into the local variable table
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{i64store} \\ \hline \textit{index} \\ \hline \end{tabular}
+				\item [\textbf{Operand Stack}] \textit{..., value--\textgreater } \\
+										{..., }
+				\item [\textbf{Description}] Pops the value off of the operand stack and stores it in the local variable table at \textit{index}. The value must be of type int64. 
+			\end{labeling}
+		\newpage 
+		
+		\subsection*{f64store}
+			\addcontentsline{toc}{subsection}{f64store} 
+			\begin{labeling}{Operand Stack Size}
+				\item [\textbf{Operation}] Store a float64 from the operand stack into the local variable table
+				\item [\textbf{Format}] \begin{tabular}{| c |} \hline \textit{f64store} \\ \hline \textit{index} \\ \hline \end{tabular}
+				\item [\textbf{Operand Stack}] \textit{..., value--\textgreater } \\
+										{..., }
+				\item [\textbf{Description}] Pops the value off of the operand stack and stores it in the local variable table at \textit{index}. The value must be of type float64. 
+			\end{labeling}
+		\newpage 
 
 	\section{int64}
 		\begin{itemize}
