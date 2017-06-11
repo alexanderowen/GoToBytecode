@@ -15,44 +15,8 @@ import (
 	"unicode"
 )
 
-var descMap = make(map[string]string)
-
-// Convert int64 to a byte slice; big endian
-func i64tobyteslice(x int64) []byte {
-	b := make([]byte, 8)
-	b[7] = byte(x)
-	b[6] = byte(x >> 8)
-	b[5] = byte(x >> 16)
-	b[4] = byte(x >> 24)
-	b[3] = byte(x >> 32)
-	b[2] = byte(x >> 40)
-	b[1] = byte(x >> 48)
-	b[0] = byte(x >> 56)
-	return b
-}
-
-// Convert uint64 to a byte slice; big endian
-func ui64tobyteslice(x uint64) []byte {
-	b := make([]byte, 8)
-	b[7] = byte(x)
-	b[6] = byte(x >> 8)
-	b[5] = byte(x >> 16)
-	b[4] = byte(x >> 24)
-	b[3] = byte(x >> 32)
-	b[2] = byte(x >> 40)
-	b[1] = byte(x >> 48)
-	b[0] = byte(x >> 56)
-	return b
-}
-
-func ui32tobyteslice(x uint32) []byte {
-	b := make([]byte, 4)
-	b[3] = byte(x)
-	b[2] = byte(x >> 8)
-	b[1] = byte(x >> 16)
-	b[0] = byte(x >> 24)
-	return b
-}
+var DEBUG bool = false
+var descMap = make(map[string]string) // map to convert from Golang description of types to gobc description. Example "int64" -> "I64"
 
 func main() {
 	descMap["int64"] = "I64"
@@ -84,7 +48,6 @@ func main() {
 
 	// type check the file
 	conf := types.Config{Importer: importer.Default()}
-	//pkg, err := conf.Check("cmd/hello", fset, []*ast.File{f}, nil)
 	_, err = conf.Check("cmd/hello", fset, []*ast.File{f}, nil)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Type Error:\n\t")
@@ -92,29 +55,36 @@ func main() {
 		os.Exit(-1)
 	}
 
-	// Inspect (DFS-walk) the AST
-	// Anon. func is called on encounter of each node
-	var bytecode []byte = []byte{0xCA, 0xFE, 0xDE, 0xAD}
+	// begin generating bytecode
+	var bytecode []byte = []byte{0xCA, 0xFE, 0xDE, 0xAD} // slice containing the bytecode data
+
+	if DEBUG {
+		// print out AST node information
+		ast.Inspect(f, func(n ast.Node) bool {
+			switch n.(type) {
+			case nil:
+				// nop
+			default:
+				fmt.Printf("%T --> %+v\n", n, n)
+			}
+			return true
+		})
+	}
+
+	// determine function count
 	var functionCount uint64
-	//bv.Inspect(f, func(n ast.Node) bool {
-	ast.Inspect(f, func(n ast.Node) bool { // count the number of functions
-		var flag bool
+	ast.Inspect(f, func(n ast.Node) bool {
 		switch n.(type) {
-		case nil:
-			flag = true
 		case *ast.FuncDecl:
 			functionCount += 1
 		default:
-
-		}
-		if !flag {
-			fmt.Printf("%T --> %+v\n", n, n)
+			// nop
 		}
 		return true
 	})
 	bytecode = append(bytecode, byte(functionCount))
 
-	// Make the functionInfo structures
+	// make the functionInfo structures
 	var funcs [][]byte = make([][]byte, functionCount)
 	for i := range funcs {
 		funcs[i] = make([]byte, 0)
@@ -135,8 +105,8 @@ func main() {
 				funcs[idx] = append(funcs[idx], 0x00)
 			}
 			// function name
-			funcs[idx] = append(funcs[idx], ui64tobyteslice(uint64(len(name)))...) // length of name
-			funcs[idx] = append(funcs[idx], []byte(name)...)                       // name
+			funcs[idx] = append(funcs[idx], bv.Ui64tobyteslice(uint64(len(name)))...) // length of name
+			funcs[idx] = append(funcs[idx], []byte(name)...)                          // name
 
 			// function descriptor
 			typ := t.Type
@@ -158,11 +128,11 @@ func main() {
 					desc += descMap[s]
 				}
 			}
-			funcs[idx] = append(funcs[idx], ui64tobyteslice(uint64(len(desc)))...) // length of descriptor
-			funcs[idx] = append(funcs[idx], []byte(desc)...)                       // descriptor
+			funcs[idx] = append(funcs[idx], bv.Ui64tobyteslice(uint64(len(desc)))...) // length of descriptor
+			funcs[idx] = append(funcs[idx], []byte(desc)...)                          // descriptor
 
 			var attributeCount uint32 = 1 //as of now, only 1 attribute: Code
-			funcs[idx] = append(funcs[idx], ui32tobyteslice(attributeCount)...)
+			funcs[idx] = append(funcs[idx], bv.Ui32tobyteslice(attributeCount)...)
 
 			//Code attribute
 			funcs[idx] = append(funcs[idx], 0x01) //attributeType
@@ -176,13 +146,7 @@ func main() {
 		bytecode = append(bytecode, funcs[i]...)
 	}
 
+	// output to .gobc file
 	outFn := strings.Split(fn, ".go")[0] + ".gobc"
 	ioutil.WriteFile(outFn, bytecode, 0777)
-
-	/*
-		fmt.Printf("Package  %q\n", pkg.Path())
-		fmt.Printf("Name:    %s\n", pkg.Name())
-		fmt.Printf("Imports: %s\n", pkg.Imports())
-		fmt.Printf("Scope:   %s\n", pkg.Scope())
-	*/
 }
