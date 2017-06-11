@@ -141,6 +141,17 @@ codeAttribute {
 			\textbf{code} \\
 				\tab The {\formalfont code} item is an array which contains the instructions of the function. Each instruction must be read 2 bytes at a time. Each instruction has a deterministic length that can be read, which is given in the instruction specification. 
 						
+	\newpage
 	
+	
+	\section{The Interpreter}
+		A stack-based VM to execute the {\formalfont gobc} instructions. 
+		\subsection{Operand Stack}
+			When a context for execution is created (i.e. when a function is called), a LIFO stack is created for it, called the operand stack. The operand stack is used to store intermediate values to operate on with bytecode instructions, parameters passed to functions, and return values of functions. \\ \\
+			Bytecode instructions wiill push and/or pop onto the operand stack, depending on the instruction. 
+		\subsection{Local Variable Table}
+			When a function is called, a local variable table needs to be instantiated to hold the local variables. This will be an array that is zero-indexed. When a function returns from execution, the local variable table should be deallocated. \\ \\
+			Instructions that use the local variable table include instructions that contain 'store' and 'load' in the name, such as \colorbox{code}{i64store} and \colorbox{code}{i64load}.
+		
 
 \end{document}
