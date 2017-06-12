@@ -1,4 +1,9 @@
-package BytecodeVisitor
+/* Visitor for nodes of the AST
+ *
+ * Visits the nodes in depth-first search order.
+ * Borrows heavily from go/ast/walk.go, under the BSD license
+ */
+package BytecodeGenerator
 
 import (
 	"fmt"

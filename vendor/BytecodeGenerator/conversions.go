@@ -1,4 +1,7 @@
-package BytecodeVisitor
+/* Conversion functions from Go types to their bytecode representation
+ *
+ */
+package BytecodeGenerator
 
 // Convert int64 to a byte slice; big endian
 func I64tobyteslice(x int64) []byte {
