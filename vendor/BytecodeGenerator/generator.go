@@ -1,3 +1,7 @@
+/* Generates the bytecode from ast.File; see 'Generate' function
+ *
+ */
+
 package BytecodeGenerator
 
 import (
@@ -6,6 +10,7 @@ import (
 	"unicode"
 )
 
+// Traverses ast.File and generates the bytecode representation
 func Generate(f *ast.File) (bytecode []byte, err error) {
 	bytecode = []byte{0xCA, 0xFE, 0xDE, 0xAD} // slice containing the bytecode data
 	var descMap = make(map[string]string)     // map to convert from Golang description of types to gobc description. Example "int64" -> "I64"
@@ -14,9 +19,9 @@ func Generate(f *ast.File) (bytecode []byte, err error) {
 	descMap["string"] = "S"
 	descMap["nil"] = "V"
 
-	// determine function count
+	// determine functionCount
 	var functionCount uint64
-	ast.Inspect(f, func(n ast.Node) bool {
+	ast.Inspect(f, func(n ast.Node) bool { //uses ast.Inspect because this requires no specific visitor
 		switch n.(type) {
 		case *ast.FuncDecl:
 			functionCount += 1
@@ -33,6 +38,7 @@ func Generate(f *ast.File) (bytecode []byte, err error) {
 		funcs[i] = make([]byte, 0)
 	}
 	var idx int = -1
+	// walk AST to populate functionInfo structures
 	Inspect(f, func(n ast.Node) bool {
 		switch n.(type) {
 		case nil:
@@ -41,14 +47,14 @@ func Generate(f *ast.File) (bytecode []byte, err error) {
 			idx += 1
 			t := n.(*ast.FuncDecl)
 			name := t.Name.Name
-			// access flags
+			// accessFlags
 			if unicode.IsUpper([]rune(name)[0]) {
 				funcs[idx] = append(funcs[idx], 0x01)
 			} else {
 				funcs[idx] = append(funcs[idx], 0x00)
 			}
 			// function name
-			funcs[idx] = append(funcs[idx], Ui64tobyteslice(uint64(len(name)))...) // length of name
+			funcs[idx] = append(funcs[idx], Ui64tobyteslice(uint64(len(name)))...) // nameLength
 			funcs[idx] = append(funcs[idx], []byte(name)...)                       // name
 
 			// function descriptor
@@ -71,14 +77,17 @@ func Generate(f *ast.File) (bytecode []byte, err error) {
 					desc += descMap[s]
 				}
 			}
-			funcs[idx] = append(funcs[idx], Ui64tobyteslice(uint64(len(desc)))...) // length of descriptor
+			funcs[idx] = append(funcs[idx], Ui64tobyteslice(uint64(len(desc)))...) // descriptorLength
 			funcs[idx] = append(funcs[idx], []byte(desc)...)                       // descriptor
 
+			// attributes
 			var attributeCount uint32 = 1 //as of now, only 1 attribute: Code
 			funcs[idx] = append(funcs[idx], Ui32tobyteslice(attributeCount)...)
 
 			//Code attribute
 			funcs[idx] = append(funcs[idx], 0x01) //attributeType
+
+			//TODO: Populate the code attribute; convert instructions to bytecode
 
 		default:
 
